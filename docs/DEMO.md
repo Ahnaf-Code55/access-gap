@@ -2,6 +2,8 @@
 
 Target: a public video under three minutes, once live AI and hosting are tested.
 
+A captioned 47-second browser-only preview is available locally at `artifacts/AccessGap-demo-preview.mp4`. It discloses that live inference is unavailable and is for internal review; it is not a final submission video or a public YouTube upload.
+
 1. **Problem (20 seconds):** accessibility information can be incomplete or contradictory. Access Gap builds a checklist from supplied evidence without converting missing facts into a confident verdict.
 2. **Sample (30 seconds):** show the fictional example. Open the two pavement sources, show their disagreement, then show the clinic's old toilet report remaining unknown.
 3. **Your journey (50 seconds):** start a new journey, enter two fictional QA places, and add a dated venue excerpt about its entrance. Show the reported fact. Add an opposing account; show the conflict and generated follow-up question.

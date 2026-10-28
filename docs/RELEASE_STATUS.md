@@ -7,6 +7,7 @@
 - Corrected six contrast findings. Axe-core 4.14.0 reports no violations for the selected WCAG A/AA rule tags at desktop and 375px mobile; some checks remain incomplete/manual.
 - Checked 320px and 375px reflow with no horizontal overflow, and keyboard skip-link focus. Focus after evidence removal now moves to the status message.
 - Deployed the public browser-only evidence demo with AI explicitly disabled: https://access-gap-hackathon.brinyberry67.chatgpt.site
+- Created a 47-second captioned offline walkthrough preview at `artifacts/AccessGap-demo-preview.mp4`. It is local-only and clearly says live inference is unavailable; it is not the required public YouTube submission video.
 
 ## Pending account-dependent steps
 
