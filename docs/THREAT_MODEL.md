@@ -1,31 +1,33 @@
 # Access Gap trust boundaries
 
-Scope: the current Node.js localhost prototype, fictional browser fixtures and optional Nebius question selection. This model does not authorize deployment or real journeys.
+Scope: the current Node.js localhost prototype, custom fictional QA journey/evidence editor, local checklist export and optional Nebius question selection. This model authorizes neither public deployment nor real journey processing.
 
-## Browser to Node
+## Browser and source records to Node
 
-The browser and every request field are untrusted. Attackers may modify the journey, add fields, claim facts are known, supply prompt instructions or request the endpoint directly. Host validation limits DNS rebinding to the localhost service; exact Origin matching and JSON content type prevent ordinary cross-origin browser posts. A caller able to omit or forge Origin remains possible, so these controls provide no identity or permission check.
+The browser and all evidence fields are untrusted. A caller can submit hostile excerpts, forged classifications, private extra fields, misleading dates/structured findings or arbitrary IDs. Validation does not establish source accuracy. The shared evidence engine recomputes missing, stale, undated, conflicting and reported findings; a newer report never automatically resolves disagreement. Known findings remain user-reported evidence, not an independently verified route verdict.
 
-Exact schema and byte limits bound accepted data. Journey and fact strings remain untrusted even after validation. `known` means supported by the fictional sample's stated evidence, not independently verified. The browser uses `textContent`; restrictive CSP and no framing reduce script and UI embedding exposure. Source secrets and server files are outside the three-file static allowlist.
+Edits remain in browser memory until an explicit consented AI request. Source links are validated HTTP(S) links without credentials and opened only on user action; the server never fetches them. Source and model text render as text. Downloaded plain-text reports contain source links/excerpts and checkbox state, so they introduce a persistent artifact outside application deletion control.
+
+Host validation prevents ordinary DNS rebinding to the loopback service. A supplied Origin must match a permitted Host exactly; opaque/null, malformed and differing origins fail. Cross-site browser metadata and non-JSON posts fail. Missing Origin is intentionally supported, so these checks provide no authentication against local processes or HTTP callers that forge headers.
+
+Loopback hosts must match the actual listening port. Optional exact deployment origins permit HTTPS authorities; they do not enable a listener, TLS or public service. HTTP allowlist entries are loopback-only. Proxy headers are ignored. Public hosting still requires a private backend, verified authority forwarding, TLS, authentication and edge controls. Rewriting a hostile Origin at the proxy can defeat the browser boundary and must not be permitted.
 
 ## Node to Nebius
 
-The server alone holds the API key. One fixed HTTPS endpoint receives the system prompt, candidate IDs and validated journey/fact strings. No source URL is fetched, and redirects are refused. The key is an Authorization header, never part of prompts or API responses.
+Only Node holds the key. One fixed HTTPS endpoint receives a fixed prompt and a minimal projection: travel date, sample flag, opaque server-generated check IDs/criteria, recomputed statuses/findings, and associated source titles, dates, excerpts and stale/undated flags. Separate source URL and start/destination/place-name fields and unrelated properties are omitted even for direct HTTP clients. Titles and excerpts are shared verbatim and can contain links or identifying text. The key appears only in the Authorization header. Redirects and supplied-URL fetching are disabled.
 
-Per-IP and global attempt limits bound repeated requests. A capped IP map bounds retained limiter identities. Process-lifetime admission and output-token ceilings, concurrency, deadlines and streamed byte bounds constrain model use. Failed work consumes the budget; timed-out work that ignores cancellation must continue to occupy its concurrency reservation until it settles. There are no retries.
+Per-client/global attempts, a bounded IP map, concurrency, process-lifetime call/output-token reservation ceilings, streamed byte bounds and deadlines constrain abuse. Operators may configure bounded rates/budgets; malformed configuration fails closed. Failed work consumes its admission. Timed-out work ignoring cancellation retains its slot until it settles. There are no automatic retries. Injectable clock and bounded test deadlines permit deterministic offline admission and cancellation checks.
 
-Compromised local users can invoke the endpoint; distributed public users can exhaust process allowance. A restart resets counters, multiple processes multiply them, IP sharing affects fairness, and input tokens still cost money. Public service needs authentication, shared admission accounting, provider monetary controls, TLS and network isolation. This patch does not supply them.
+Input tokens still cost money. Restarts reset counters, replicas multiply allowance and shared proxy IPs affect fairness. Local callers can exhaust the allowance. Require a provider-enforced monetary quota and dedicated key, authentication and shared accounting before a broader trial. No process-local counter is a complete spending or availability guarantee.
 
 ## Nebius to browser
 
-A model can follow injected instructions or return misleading claims. Prompts alone are insufficient containment. Output is parsed as exactly `{"questionIds":[...]}` with at most five distinct integer IDs from unknown/conflicting input facts. Only fixed server question templates reach the browser. Model prose and supplied labels/details never become question text, executable HTML, factual evidence or route advice.
+A prompt alone cannot contain injection or misleading answers. Model output is parsed as exactly `{"questionIds":[...]}` with at most five unique strings from server-derived candidates. Candidates include missing/conflicting information and reported unavailable/limited access. The server returns fixed criterion question templates with a one-based check number; untrusted IDs, place names, source text and generated prose never become question text, factual evidence, HTML or route advice.
 
-A valid but poor selection can omit important questions or rank them badly. The static checklist remains available. Model choices cannot establish that a journey is accessible. Live compatibility with the constrained JSON contract is unverified; refusal or malformed output produces a generic unavailable response.
+A valid selection can still omit important checks or rank them poorly. The local evidence report and checklist remain available; AI does not replace them. Live compatibility with the constrained selection schema is unverified. Refusal, malformed output and service failure produce generic errors without provider details or secret values.
 
-## Future sources and user data
+## Future sources and real users
 
-External maps, venue pages and community reports introduce new boundaries and are not integrated here. Before integration: retain source identity, permission, timestamp and freshness; separate reported, unknown and conflicting observations; define evidence standards; prevent source text becoming model instructions; and validate that fetching cannot reach private networks. Real journey collection also requires the privacy gates below. No current security control makes unverified source claims safe to present as verified accessibility.
+External maps, scraping and community feeds are not integrated. Before integration, review permissions, provenance, date/freshness standards, untrusted source instructions and SSRF/private-network boundaries. Before real user data, complete the privacy decisions in [PRIVACY.md](PRIVACY.md). The current input interface does not grant approval to enter real journeys or sensitive needs.
 
-## Residual risk owners
-
-The project lead owns product evidence, user research and release approval. The security lead owns reviewing authentication, hosting, budgets and secret handling before deployment. Both must approve real-data processing and provider retention terms. Operators own the hosting/proxy logs and provider account quota: the Node app cannot control either.
+The project lead owns evidence/product validity and release decisions. The security lead owns hosting, authentication, budgets and secret review. Both must approve real-data processing and provider retention terms. Operators own infrastructure logs, provider quota and key rotation; the Node application cannot control those systems.

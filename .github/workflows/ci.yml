@@ -1,13 +1,9 @@
-name: Offline security tests
-
+name: Test
 on:
-  pull_request:
   push:
-    branches: [main]
-
+  pull_request:
 permissions:
   contents: read
-
 jobs:
   test:
     runs-on: ubuntu-latest

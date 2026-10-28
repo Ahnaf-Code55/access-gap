@@ -1,32 +1,33 @@
 # Release checklist and remaining risks
 
-This checklist is for the project lead and security lead to review together. Completion of local hardening does not authorize public deployment or real-data collection.
+Project and security leads should review this together. Local hardening and a custom input interface do not authorize public deployment or real journeys.
 
 ## Local review evidence
 
-- [ ] Review the patch, trust model and privacy rules; verify no credentials or real journey data entered source, fixtures, history or logs.
-- [ ] Run `npm test` under Node 20 and a current supported Node version. All upstream responses must remain mocked; no test should consume paid API usage.
-- [ ] Confirm ordinary same-origin browser behavior, fictional-data labels, ordered check references, keyboard flow and screen-reader announcement.
-- [ ] Verify absent/empty key disables AI and the static checklist remains usable. Check generic failure and 429 UI behavior.
-- [ ] Have the project lead independently audit the PR and record unresolved issues before merging.
+- [ ] Review the full evidence workflow and security patch together. Confirm no credentials or real journeys/needs entered fixtures, source, history or logs.
+- [ ] Run the complete offline suite under Node 20 and 22, preserving evidence/export tests. All upstream responses must remain mocked; CI configuration is not proof of a successful run.
+- [ ] Exercise sample/custom fictional QA workflows, stale/conflicting/negative findings, source inspection/removal, checkbox reset, source links and downloaded report contents. Confirm check numbers match their evidence cards.
+- [ ] Confirm consent gates both browser/server requests; source URLs and unrelated properties stay out of the upstream projection even for direct HTTP callers. Confirm server recomputation ignores forged verdicts.
+- [ ] Confirm missing/empty key leaves the local checklist usable, config exposes only availability, and generic errors/429 states restore the UI controls. Verify keyboard and screen-reader behavior.
+- [ ] Review configurable limits and exact deployment allowlisting, fail-closed invalid configuration, cancellation and concurrency retention. Obtain independent project-lead review of the PR before merging.
 
 ## Before a protected public demo
 
-- [ ] Obtain explicit deployment approval. Keep the fictional-data restriction visible; no real journey fields or accessibility needs.
-- [ ] Put authentication and rate/concurrency controls at a trusted edge. Node accepts only loopback authorities: a public proxy must be designed and tested explicitly, reach a private loopback/private backend, and normalize Host/Origin safely. Do not simply disable validation or trust forwarded headers. Prevent direct backend exposure.
-- [ ] Set a provider-enforced monetary quota and a least-privilege dedicated demo key. Confirm quota behavior and account alerts with the operator. Remember the app reserves output tokens only; input cost, restarts and replica counts increase spend. Add shared persistent accounting before scaling beyond one controlled process.
-- [ ] Configure HTTPS at the edge, verify certificates, redirects, HSTS and the deployed CSP/security headers on normal and failure paths. HSTS is not sent by the plain-HTTP localhost app.
-- [ ] Use a secret manager or protected environment injection; never bundle the key into assets, build logs or client configuration. Limit key access, document revocation/rotation and disable AI immediately if exposed or spend exceeds plan.
-- [ ] Disable sensitive proxy/platform logging; set explicit log retention and access. Monitor safe aggregate error/rate/budget counters without recording journey bodies or Authorization headers.
-- [ ] Test request/header/body/time/connection bounds through the actual proxy and deployment runtime. Serverless/replicated restarts reset local accounting and may require a different deployment design.
-- [ ] Separately authorize a small paid model smoke test with fictional data; verify model availability, the restricted selection JSON contract, timeouts/refusal/errors and actual billing/usage limits. No live API compatibility is claimed by offline tests.
-- [ ] Document stop/rollback steps: remove public route, disable/revoke demo key, stop affected processes, inspect safe usage records, and require review before restoring service.
+- [ ] Obtain explicit deployment approval. Keep fictional-only notices visible for sample, custom inputs and exports. No real journey fields or accessibility needs may be used pending privacy review.
+- [ ] Set authentication, rate/concurrency controls and a private backend at the edge. Configure `ACCESS_GAP_ALLOWED_ORIGINS` with exact HTTPS origins and test matching authority/Origin behavior through the real proxy. It supplies an allowlist, not TLS or proxy trust. Preserve the external Origin and validated Host; do not rewrite attacker Origin to bypass checks. Reject direct backend access. Forwarded IP/authority headers remain untrusted.
+- [ ] Choose conservative `ACCESS_GAP_*` rates, lifetime calls and output allowance; validate startup rejects empty/invalid values. Set a provider-enforced monetary quota, restricted dedicated demo key and account alerts. Input tokens cost extra; process restarts/replicas reset or multiply local allowance. Add shared persistent accounting before scaling.
+- [ ] Verify HTTPS, certificate handling, redirects, HSTS and deployed CSP/security headers on normal/error paths. Plain localhost HTTP does not send HSTS.
+- [ ] Inject secrets through protected environment/secrets management. Keep keys out of assets, build logs and browser configuration. Record revocation/rotation and rapid AI-disable procedures.
+- [ ] Disable sensitive platform/proxy request logging, establish retention/access, and monitor safe aggregate error/rate/budget signals without bodies, URLs containing sensitive data or Authorization headers.
+- [ ] Test request/body/header/connection/time limits through the actual runtime/proxy. Validate configured authorities and all error paths. Serverless restarts and replica/process counts require explicit budget design.
+- [ ] Separately authorize a small fictional-data paid smoke test: verify model availability and exact JSON ID-selection contract, refusal/malformed output, latency, billing and provider cap behavior. Never present mocks as live inference.
+- [ ] Record rollback: remove public route, disable/revoke demo key, stop affected processes, inspect safe usage records and require review before restoration.
 
-## Before accepting real journeys or sources
+## Before real journeys or new sources
 
-- [ ] Complete every decision in [PRIVACY.md](PRIVACY.md), including provider retention/training terms, minimization, notice, deletion and access.
-- [ ] Define evidence, attribution and freshness requirements for external sources. Ensure unknown/conflicting claims remain distinct and that model output never becomes evidence.
-- [ ] Review any new fetching for SSRF, malicious source instructions, licensing and private-network access.
-- [ ] Test with accessibility practitioners and representative users; confirm the product never encourages reliance on fictional or unverified information for travel safety.
+- [ ] Complete all [privacy decisions](PRIVACY.md), including provider training/retention terms, minimization, clear notice, deletion/access and exported-file handling.
+- [ ] Define evidence permission, provenance, recency and conflict standards. Recomputed classifications remain based on user-selected findings, not semantic truth verification; model output never becomes evidence.
+- [ ] Review new fetching/feeds for SSRF, private-network access, hostile instructions and source licensing.
+- [ ] Seek accessibility-practitioner and representative-user feedback. Test mobile, keyboard, screen-reader and export workflows without implying compliance or travel safety from automated tests alone.
 
-Residual local limitations: no authentication, shared persistent spend ledger, currency cap, real-time source verification or public proxy configuration. A local process can exhaust the allowance; valid model selection can omit useful questions. These are release decisions, not promises supplied by the current patch.
+Residual limitations: no authentication, shared persistent spend ledger, currency cap, hosted proxy/TLS configuration or independent source truth verification. Local callers can exhaust allowance. Valid AI selection can omit useful checks. Downloads persist outside application control. These remain release decisions.
