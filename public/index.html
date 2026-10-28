@@ -6,21 +6,40 @@
   <meta name="color-scheme" content="light">
   <title>Access Gap — know before you go</title>
   <link rel="stylesheet" href="/style.css">
-  <script defer src="/app.js"></script>
+  <script type="module" src="/app.js"></script>
 </head>
 <body>
-  <header class="topbar"><a class="brand" href="/" aria-label="Access Gap home"><span class="brandmark" aria-hidden="true">a<span>·</span></span> access gap</a><span class="topnote">A little more certainty for the journey.</span><span class="prototype">EARLY PROTOTYPE</span></header>
+  <a class="skip-link" href="#journey">Skip to journey</a>
+  <header class="topbar"><a class="brand" href="/" aria-label="Access Gap home"><span class="brandmark" aria-hidden="true">a<span>·</span></span> access gap</a><span class="topnote">A little more certainty for the journey.</span><span class="prototype">WORKING PROTOTYPE</span></header>
   <main>
-    <section class="intro"><div class="eyebrow"><span class="pulse"></span> PLAN WITH MORE CONTEXT</div><h1>Know before<br><em>you go.</em></h1><p>Accessibility details can be hard to find. See what’s known, what’s missing, and what to check before a journey.</p><a class="start" href="#journey">Explore a sample journey <span aria-hidden="true">↘</span></a></section>
+    <section class="intro"><div class="eyebrow"><span class="pulse"></span> PLAN WITH MORE CONTEXT</div><h1>Know before<br><em>you go.</em></h1><p>Bring the accessibility details you have. Find the missing pieces, compare sources, and prepare the questions that matter.</p><a class="start" href="#journey">Build your evidence checklist <span aria-hidden="true">↘</span></a></section>
     <section class="board" id="journey" aria-labelledby="journey-title">
-      <div class="board-head"><div><div class="eyebrow">YOUR JOURNEY <span class="sample">FICTIONAL SAMPLE</span></div><h2 id="journey-title">A journey, in the details.</h2><p>Here’s how Access Gap helps you spot the gaps.</p></div><div class="journey-icon" aria-hidden="true">↗</div></div>
-      <div class="sample-notice"><strong>Illustrative data only.</strong> The places and observations below are fictional and must not be used for travel planning.</div>
-      <div class="route-head"><div><span class="tiny">FROM</span><strong>Riverside Station</strong></div><span class="route-arrow" aria-hidden="true">→</span><div><span class="tiny">TO</span><strong>Garden Community Clinic</strong></div><span class="route-type">WHEELCHAIR USER</span></div>
-      <div class="content-grid"><div><div class="section-head"><div><span class="tiny">THE ROUTE</span><h3>Check each step</h3></div><span class="tiny">3 STOPS</span></div><div id="steps" class="steps"></div></div><aside class="aside"><span class="tiny">YOUR CHECKLIST</span><h3>Questions worth asking.</h3><p>The right question can make the next step easier.</p><ul id="checklist"></ul><button id="ai-button" type="button">Draft questions with AI <span aria-hidden="true">↗</span></button><p class="fineprint">Optional. Sends this fictional journey to Nebius Token Factory; requires a server API key.</p><div id="ai-result" class="ai-result" aria-live="polite"></div></aside></div>
-      <div class="legend"><span><i class="dot known"></i> Supported by sample evidence</span><span><i class="dot unknown"></i> Information missing</span><span><i class="dot conflicting"></i> Conflicting information</span></div>
+      <div class="board-head"><div><div class="eyebrow">YOUR JOURNEY <span id="sample-badge" class="sample">FICTIONAL SAMPLE</span></div><h2 id="journey-title">A journey, in the details.</h2><p>Start with the example, or build a checklist from your own sources.</p></div><div class="journey-icon" aria-hidden="true">↗</div></div>
+      <div id="data-notice" class="sample-notice"></div>
+      <div class="toolbar"><button id="own-journey" class="secondary" type="button">Start my own journey</button><button id="load-sample" class="text-button" type="button">Reset fictional example</button><button id="download" class="secondary" type="button">Download checklist (.txt)</button></div>
+      <form id="journey-form" class="journey-form">
+        <label>From<input id="from" name="from" maxlength="100" required autocomplete="off"></label>
+        <label>To<input id="to" name="to" maxlength="100" required autocomplete="off"></label>
+        <label>Travel date<input id="travel-date" name="travelDate" type="date" required></label>
+        <button type="submit" class="primary">Update journey</button>
+      </form>
+      <p class="fineprint">Changing the place names clears previous evidence. Updating the travel date keeps it.</p>
+      <div class="evidence-editor">
+        <details id="evidence-details"><summary>Add a source or observation <span aria-hidden="true">+</span></summary><p class="editor-help">Record what a source actually reports. Keep its date and exact wording. Conflicting accounts stay visible.</p>
+          <form id="evidence-form">
+            <div class="form-grid"><label>Place<select id="place" required></select></label><label>Access detail<select id="criterion" required></select></label><label>What does the source report?<select id="finding" required><option value="yes">Available</option><option value="no">Unavailable</option><option value="limited">Available with limitations</option></select></label><label>Source title<input id="source-title" required maxlength="120" placeholder="Venue guide or personal observation"></label><label>Source link (optional)<input id="source-url" type="url" maxlength="500" placeholder="https://…"></label><label>Date of the report (if known)<input id="observed-at" type="date"></label></div>
+            <label>Excerpt or observation<textarea id="quote" required maxlength="500" rows="3" placeholder="Copy the relevant wording, or describe what you observed."></textarea></label>
+            <p class="fineprint">No link is fetched automatically. Evidence stays in this tab unless you explicitly request AI questions.</p><button type="submit" class="primary">Add evidence</button>
+          </form>
+        </details>
+      </div>
+      <p id="form-status" class="form-status" role="status" aria-live="polite"></p>
+      <div class="summary-bar" aria-label="Evidence counts"><span><b id="count-known">0</b> reported</span><span><b id="count-unknown">0</b> unknown</span><span><b id="count-conflicting">0</b> conflicting</span><span class="summary-note">Reported ≠ independently verified</span></div>
+      <div class="content-grid"><div><div class="section-head"><div><span class="tiny">PLACES TO CHECK</span><h3 id="route-title">Check each step</h3></div><span class="tiny">SOURCES & GAPS</span></div><p class="editor-help">This checklist does not calculate a route. Check the connecting pavement and crossings separately.</p><div id="steps" class="steps"></div></div><aside class="aside"><span class="tiny">YOUR CHECKLIST</span><h3>Questions worth asking.</h3><p>Confirm conditions with the provider for your travel date.</p><ul id="checklist"></ul><div class="ai-section"><label class="consent"><input id="ai-consent" type="checkbox">Send this journey’s place names, travel date, source titles, dates, and excerpts to Nebius to draft questions. Source links stay in this tab.</label><button id="ai-button" class="primary" type="button" disabled>Draft questions with AI <span aria-hidden="true">↗</span></button><p id="ai-availability" class="fineprint">Checking AI availability…</p><div id="ai-result" class="ai-result" aria-live="polite"></div></div></aside></div>
+      <div class="legend"><span><i class="dot known"></i> Reported in dated evidence</span><span><i class="dot unknown"></i> Missing, undated, or over 90 days old</span><span><i class="dot conflicting"></i> Sources disagree</span></div>
     </section>
-    <section class="closing"><span class="asterisk" aria-hidden="true">✳</span><div><h2>Information should open doors.</h2><p>Built for journeys where the little details make a big difference.</p></div></section>
+    <section class="closing"><span class="asterisk" aria-hidden="true">✳</span><div><h2>Information should open doors.</h2><p>Your checklist stays in this tab. Reloading clears your changes; download a copy to keep it.</p></div></section>
   </main>
-  <footer><span>access gap <span class="footer-dot">·</span> an early prototype</span><span>Check details with the provider before travelling.</span></footer>
+  <footer><span>access gap <span class="footer-dot">·</span> an early prototype</span><span>Confirm current conditions before travelling.</span></footer>
 </body>
 </html>
