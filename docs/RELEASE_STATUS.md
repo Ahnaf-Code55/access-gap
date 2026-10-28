@@ -10,7 +10,7 @@
 
 ## Pending account-dependent steps
 
-- Nebius access is blocked by mandatory card verification even though the hackathon advertises credits and Nebius documentation says promo codes can be applied without a card. See [NEBIUS_ACCESS.md](NEBIUS_ACCESS.md). The promo request and an official card-free resolution are still pending; no key or card was entered.
+- Nebius access is blocked by mandatory card verification even though the hackathon advertises credits and Nebius documentation says promo codes can be applied without a card. The promo form shows submitted, but the code has not been confirmed. See [NEBIUS_ACCESS.md](NEBIUS_ACCESS.md). No key or card was entered.
 - A real runtime NVIDIA-model call via Nebius, with a recorded test result and a final decision on how judges access inference.
 - Devpost registration: personal eligibility declarations and Official Rules acceptance must be completed by the team leader.
 - Final demo recording and public YouTube upload after the live model segment is available.

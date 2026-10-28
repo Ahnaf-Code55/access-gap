@@ -5,6 +5,7 @@ Updated 28 October 2026.
 ## What we know
 
 - The hackathon's [Devpost resources page](https://nebiusglobalaihackathon.devpost.com/resources) advertises $25 in Token Factory credits through its promo form using activation code `NEBIUS-DEVPOST-GLOBAL26`, and another $25 through the Nebius Builders Program.
+- The promo form currently displays “Form submitted” and says the promo code will be emailed. Receipt and redemption have not been confirmed.
 - Nebius's [billing documentation](https://docs.tokenfactory.nebius.com/other-capabilities/billing) says promo codes can be applied without billing information or a bank card, through the account balance menu.
 - In this account's current signup flow, the console is not reachable until a mandatory billing page is completed, including card details for a temporary $0 authorization. The team has no card and has not entered one or attempted a charge.
 - A [Devpost discussion](https://nebiusglobalaihackathon.devpost.com/forum_topics/45365-token-factory-access-without-a-credit-debit-card) contains recent reports of the same onboarding block, including after participants requested hackathon promo credits. The organizer directed participants to Nebius's [current Discord](https://discord.com/invite/eXYTGhgnhK). These participant reports are not an official resolution.
@@ -13,7 +14,7 @@ The published instructions and the account's observed onboarding flow do not lin
 
 ## Next steps that do not require a card
 
-1. If the team chooses, request the advertised hackathon promo through the form linked from Devpost. It asks for a name, email, job title, and company name and asks permission to store/process the submitted information to provide the requested content. Marketing checkboxes are optional. Use truthful details; do not invent a company. A team member should review the notice and submit the form themselves.
+1. Check the account email and spam folder for the promised promo code. A form receipt is not a credit grant or proof that card verification will be bypassed.
 2. Ask Nebius in the current community channel for a card-free way to finish onboarding and apply the hackathon credits, or ask the hackathon organizer to confirm an approved route. Do not post API keys, payment details, or personal account information in the public channel.
 3. Keep the public demo in browser-only mode until an approved Nebius key and a small live call are available. Do not replace the required Nebius model with another provider and claim the integration is complete.
 
