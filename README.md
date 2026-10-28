@@ -25,7 +25,9 @@ export NEBIUS_API_KEY='your-key-here'
 npm start
 ```
 
-The server sends the displayed sample facts to NVIDIA Nemotron via the Nebius Token Factory chat completions API when you select **Draft questions with AI**. The key stays on the server and is not included in browser code. The default model is `nvidia/nemotron-3-super-120b-a12b`; set `NEBIUS_MODEL` to an available NVIDIA model if necessary. Never commit a real key. See the [Nebius Nemotron example](https://nebius.com/services/token-factory/nemotron).
+When you select **Draft questions with AI**, the server sends the fictional journey title and the sample fact labels, statuses and details to the fixed Nebius Token Factory chat completions endpoint. The model selects uncertain check IDs; the server renders fixed question templates referencing those checks. Arbitrary model prose and accessibility claims are rejected. The key stays on the server. The default model is `nvidia/nemotron-3-super-120b-a12b`; set `NEBIUS_MODEL` to an available NVIDIA model if necessary. Never commit a real key. Live model compatibility with the restricted JSON selection contract is unverified.
+
+The `.env.example` file documents environment names; Node does not load it automatically. A missing or empty key disables AI. Keep the server on localhost and use only fictional data. The API requires JSON, a matching loopback Host/port and, when supplied, an exactly matching Origin. Rate, concurrency, time, byte and process-lifetime admission limits are fixed in `server.js`; see [SECURITY.md](SECURITY.md) for values. The 45,000 reserved output-token allowance is not a monetary cap: input tokens cost extra, and every process restart or replica has a new allowance. Public trials require separate deployment review, authentication and provider monetary controls.
 
 Run tests with `npm test`.
 
@@ -33,7 +35,7 @@ Run tests with `npm test`.
 
 - A fictional three-stop journey with clearly labelled supported, unknown, and conflicting observations.
 - Source and recency labels, and a checklist of questions.
-- Optional server-side integration that asks Nemotron to draft questions from the sample facts; no live API call has been verified unless a key is configured.
+- Optional server-side integration that asks Nemotron to select uncertain checks, then renders questions from fixed templates; no live API call has been verified.
 - No data storage, accounts, tracking, or user-supplied URL fetching.
 
 ## What comes next
@@ -49,7 +51,7 @@ Run tests with `npm test`.
 - **Project lead and builder:** repository owner, [@Ahnaf-Code55](https://github.com/Ahnaf-Code55).
 - **Security lead:** Turjo, [@TRahman2414](https://github.com/TRahman2414). Suggested focus: threat model, key management, input and model-output handling, deployment hardening, and security review.
 
-See [SECURITY.md](SECURITY.md) for the prototype's boundaries and priority review items.
+See [SECURITY.md](SECURITY.md), the [trust model](docs/THREAT_MODEL.md), [privacy rules](docs/PRIVACY.md) and [release checklist](docs/RELEASE_CHECKLIST.md) for implemented controls and remaining release decisions.
 
 ## Submission status
 

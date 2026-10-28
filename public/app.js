@@ -15,12 +15,13 @@ const steps = [
 const labels = { known: 'Supported', unknown: 'Unknown', conflicting: 'Conflicting' };
 const stepsEl = document.querySelector('#steps');
 function element(tag, className, text) { const el = document.createElement(tag); if (className) el.className = className; if (text !== undefined) el.textContent = text; return el; }
+let checkNumber = 0;
 steps.forEach((step, index) => {
   const section = element('section', 'step');
   const marker = element('div', 'marker', String(index + 1)); marker.setAttribute('aria-hidden', 'true'); section.append(marker);
   const body = element('div', 'step-body'); body.append(element('div', 'tiny', step.kind), element('h4', '', step.name));
   for (const fact of step.facts) {
-    const card = element('div', 'fact'); const top = element('div', 'fact-top'); top.append(element('strong', '', fact.label), element('span', `badge ${fact.status}`, labels[fact.status]));
+    const card = element('div', 'fact'); const top = element('div', 'fact-top'); top.append(element('strong', '', `Check ${++checkNumber} · ${fact.label}`), element('span', `badge ${fact.status}`, labels[fact.status]));
     card.append(top, element('p', '', fact.detail), element('div', 'source', `${fact.source} · ${fact.date}`)); body.append(card);
   }
   section.append(body); stepsEl.append(section);
