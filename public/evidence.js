@@ -19,7 +19,7 @@ function day(date) {
 }
 export function safeSourceUrl(value) {
   if (!value) return true;
-  if (typeof value !== 'string' || value.length > 500) return false;
+  if (typeof value !== 'string' || value.length > 500 || /[\u0000-\u0020\u007f-\u009f\u2028\u2029\u202a-\u202e\u2066-\u2069]/.test(value)) return false;
   try { const url = new URL(value); return ['https:', 'http:'].includes(url.protocol) && !url.username && !url.password; }
   catch { return false; }
 }
@@ -36,7 +36,7 @@ export function validatePlan(plan, today = isoToday()) {
   for (const item of plan.evidence) {
     if (!item || !text(item.id, 40) || ids.has(item.id)) return 'Evidence identifiers must be unique.';
     ids.add(item.id);
-    if (!stopIds.has(item.stopId) || (plan.stops.find(s => s.id === item.stopId)?.kind === 'connection' && item.criterion !== 'pavement') || !criterionIds.has(item.criterion) || !Object.hasOwn(VALUES, item.value)) return 'Choose a place, access detail, and reported finding for every record.';
+    if (!stopIds.has(item.stopId) || (plan.stops.find(s => s.id === item.stopId)?.kind === 'connection' && item.criterion !== 'pavement') || !criterionIds.has(item.criterion) || typeof item.value !== 'string' || !Object.hasOwn(VALUES, item.value)) return 'Choose a place, access detail, and reported finding for every record.';
     if (!text(item.sourceTitle, 120) || !text(item.quote, 500)) return 'Every record needs a source title and an excerpt or observation.';
     if (typeof item.sourceUrl !== 'string' || !safeSourceUrl(item.sourceUrl)) return 'Use an HTTP or HTTPS source link without embedded credentials.';
     if (typeof item.observedAt !== 'string' || (item.observedAt && (!Number.isFinite(day(item.observedAt)) || day(item.observedAt) > day(today)))) return 'Evidence dates must be valid and cannot be in the future. Leave the date empty if unknown.';
@@ -69,16 +69,20 @@ export function analyzePlan(plan, today = isoToday()) {
 }
 
 export function reportMarkdown(report, checked = new Set()) {
-  const lines = ['# Access Gap evidence checklist', '', `${report.from} → ${report.to}`, `Travel date: ${report.travelDate} | Assessed: ${report.assessedAt}`, '', report.isSample ? '**Fictional sample data. Do not use for travel.**' : '**User-supplied evidence; not independently verified.**', `Review window: ${report.freshnessDays} days. A source date is not a guarantee of current conditions.`, ''];
+  // Keep user text inside its field: it cannot create headings or checked rows.
+  const clean = value => String(value).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/g, '\uFFFD').replace(/\r\n?|[\u2028\u2029]/g, '\n');
+  const inline = value => clean(value).replace(/\n/g, ' ');
+  const excerpt = value => clean(value).replace(/\n/g, '\n    ');
+  const lines = ['# Access Gap evidence checklist', '', `${inline(report.from)} → ${inline(report.to)}`, `Travel date: ${report.travelDate} | Assessed: ${report.assessedAt}`, '', '**Local prototype: fictional QA/sample data only. Do not use for travel.**', report.isSample ? '**Fictional sample data. Do not use for travel.**' : '**User-supplied QA evidence; not independently verified.**', `Review window: ${report.freshnessDays} days. A source date is not a guarantee of current conditions.`, ''];
   for (const stop of report.stops) {
-    lines.push(`## ${stop.name}`, '');
+    lines.push(`## ${inline(stop.name)}`, '');
     for (const fact of stop.facts) {
       lines.push(`- ${fact.label}: ${fact.status === 'known' ? VALUES[fact.finding] : fact.status}. ${fact.detail}`);
-      for (const e of fact.evidence) lines.push(`  Source: ${e.sourceTitle} (${e.observedAt || 'date unknown'}${e.stale ? ', needs a freshness check' : ''})`, `  Link: ${e.sourceUrl || 'not provided'}`, `  Excerpt: ${e.quote}`);
+      for (const e of fact.evidence) lines.push(`  Source: ${inline(e.sourceTitle)} (${e.observedAt || 'date unknown'}${e.stale ? ', needs a freshness check' : ''})`, `  Link: ${inline(e.sourceUrl || 'not provided')}`, `  Excerpt: ${excerpt(e.quote)}`);
     }
     lines.push('');
   }
-  lines.push('## Questions to confirm', '', ...report.questions.map(q => `- [${checked.has(q.id) ? 'x' : ' '}] ${q.text}`), '', 'Check current conditions directly with the provider before travelling. No route geometry or safety assessment is provided.');
+  lines.push('## Questions to confirm', '', ...report.questions.map(q => `- [${checked.has(q.id) ? 'x' : ' '}] ${inline(q.text)}`), '', 'Check current conditions directly with the provider before travelling. No route geometry or safety assessment is provided.');
   return lines.join('\n');
 }
 

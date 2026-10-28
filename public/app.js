@@ -14,18 +14,19 @@ function resetAi() { checkedQuestions.clear(); revision++; $('#ai-result').textC
 function fillJourneyForm() { $('#from').value = plan.from; $('#to').value = plan.to; $('#travel-date').value = plan.travelDate; }
 function render() {
   report = analyzePlan(plan);
-  $('#sample-badge').textContent = plan.isSample ? 'FICTIONAL SAMPLE' : 'YOUR EVIDENCE';
-  $('#data-notice').textContent = plan.isSample ? 'Illustrative data only. The sample places and sources are fictional. Do not use this example for travel planning.' : 'Your sources are not independently verified. A dated report can still be wrong or out of date. Confirm current conditions before travelling.';
+  $('#sample-badge').textContent = plan.isSample ? 'FICTIONAL SAMPLE' : 'FICTIONAL QA';
+  $('#data-notice').textContent = plan.isSample ? 'Illustrative data only. The sample places and sources are fictional. Do not use this example for travel planning.' : 'Fictional QA evidence only. Do not enter real journeys, locations, disability information or accessibility needs. These sources are not independently verified and must not be used for travel planning.';
   $('#route-title').textContent = `${plan.from} → ${plan.to}`;
   for (const key of ['known', 'unknown', 'conflicting']) $(`#count-${key}`).textContent = report.counts[key];
   $('#steps').replaceChildren();
   $('#place').replaceChildren(...plan.stops.map(s => { const option = element('option', '', s.name); option.value = s.id; return option; }));
   fillCriteria();
+  let checkNumber = 0;
   report.stops.forEach((stop, index) => {
     const section = element('section', 'step'); const marker = element('div', 'marker', String(index + 1)); marker.setAttribute('aria-hidden', 'true'); section.append(marker);
     const body = element('div', 'step-body'); body.append(element('h4', '', stop.name));
     for (const fact of stop.facts) {
-      const card = element('div', 'fact'); const top = element('div', 'fact-top'); top.append(element('strong', '', fact.label), element('span', `badge ${fact.status}`, labels[fact.status]));
+      const card = element('div', 'fact'); const top = element('div', 'fact-top'); top.append(element('strong', '', `Check ${++checkNumber} · ${fact.label}`), element('span', `badge ${fact.status}`, labels[fact.status]));
       card.append(top, element('p', '', fact.detail));
       if (fact.evidence.length) {
         const details = element('details', 'source-details'); details.append(element('summary', '', `View ${fact.evidence.length} source${fact.evidence.length === 1 ? '' : 's'}`));
@@ -66,8 +67,8 @@ $('#journey-form').addEventListener('submit', event => {
   plan = candidate; resetAi(); render(); message(renamed ? 'Journey updated. Previous evidence was cleared because the places changed.' : 'Travel date updated.');
 });
 $('#own-journey').addEventListener('click', () => {
-  plan = { from: 'Your starting point', to: 'Your destination', travelDate: isoToday(), isSample: false, stops: [{ id: 'start', name: 'Your starting point' }, { id: 'path', name: 'Connecting pavement', kind: 'connection' }, { id: 'destination', name: 'Your destination' }], evidence: [] };
-  resetAi(); fillJourneyForm(); render(); message('Enter your start and destination, then choose Update journey.'); $('#from').focus(); $('#from').select();
+  plan = { from: 'Fictional starting point', to: 'Fictional destination', travelDate: isoToday(), isSample: false, stops: [{ id: 'start', name: 'Fictional starting point' }, { id: 'path', name: 'Connecting pavement', kind: 'connection' }, { id: 'destination', name: 'Fictional destination' }], evidence: [] };
+  resetAi(); fillJourneyForm(); render(); message('Enter fictional QA places only, then choose Update journey.'); $('#from').focus(); $('#from').select();
 });
 $('#load-sample').addEventListener('click', () => { plan = samplePlan(); resetAi(); fillJourneyForm(); render(); message('Fictional example restored. Your previous changes were cleared.'); });
 $('#evidence-form').addEventListener('submit', event => {
@@ -86,12 +87,12 @@ $('#ai-button').addEventListener('click', async () => {
   try {
     const response = await fetch('/api/questions', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ plan: { ...plan, evidence: plan.evidence.map(e => ({ ...e, sourceUrl: '' })) }, consent: $('#ai-consent').checked }) });
     const data = await response.json();
-    if (revision === requestRevision) $('#ai-result').textContent = response.ok ? `AI draft — check before using\n\n${data.questions}` : data.error || 'Could not prepare questions.';
+    if (revision === requestRevision) $('#ai-result').textContent = response.ok ? `AI-selected questions — not accessibility evidence or travel advice\n\n${data.questions || 'No additional checks selected.'}` : data.error || 'Could not prepare questions.';
   } catch { if (revision === requestRevision) $('#ai-result').textContent = 'Could not reach the server. Your evidence checklist is still available.'; }
   finally { aiBusy = false; refreshAiButton(); }
 });
 try {
   const response = await fetch('/api/config'); if (!response.ok) throw new Error(); const config = await response.json(); aiAvailable = config.aiAvailable === true;
-  $('#ai-availability').textContent = aiAvailable ? 'AI drafts use NVIDIA Nemotron on Nebius Token Factory. Generated text may contain mistakes.' : 'AI is not configured on this server. The evidence checklist and download work without an API key.';
+  $('#ai-availability').textContent = aiAvailable ? 'AI selects check IDs using NVIDIA Nemotron on Nebius Token Factory. Questions use fixed templates; selection can omit useful checks.' : 'AI is not configured on this server. The evidence checklist and download work without an API key.';
 } catch { $('#ai-availability').textContent = 'Could not check AI availability. The evidence checklist and download are available.'; }
 refreshAiButton();
