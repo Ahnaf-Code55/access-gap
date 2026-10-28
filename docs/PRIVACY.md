@@ -1,6 +1,6 @@
 # Privacy and retention rules
 
-Current rule: **fictional fixtures and fictional QA entries only**, including the custom journey/evidence workflow. Do not enter real origin/destination pairs, health/disability information, accessibility needs, names, contact information, account identifiers or secrets. Validation cannot tell whether a journey or excerpt describes a real person; operators and reviewers must enforce this restriction pending the privacy and release reviews.
+Current rule: **fictional fixtures and fictional QA entries only, plus the built-in attributed public-institution example in docs/SOURCES.md**, including the custom journey/evidence workflow. Do not enter real origin/destination pairs, health/disability information, accessibility needs, names, contact information, account identifiers or secrets. Validation cannot tell whether a journey or excerpt describes a real person; operators and reviewers must enforce this restriction pending the privacy and release reviews.
 
 ## Current data flow
 
@@ -27,4 +27,4 @@ The project and security leads must document and approve:
 - Provenance/permission and data-flow review for external sources, separating public evidence from sensitive personal needs. Keep sensitive payloads and credentials out of monitoring, support tickets, audit emails and GitHub issues.
 - Incident response, export/deletion/contact procedures and review with relevant privacy expertise for intended users and jurisdictions.
 
-Until these gates are complete, keep both sample and custom workflows fictional. Do not collect profiles or reuse demo inputs for analytics or training.
+The curated public-institution fixture contains no private journey or personal accessibility profile and may be shown with its attribution and uncertainty labels. All other custom workflows remain fictional until the gates above are complete. Do not collect profiles or reuse demo inputs for analytics or training.

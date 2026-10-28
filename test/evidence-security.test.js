@@ -17,7 +17,7 @@ test('exports retain warnings and contain multiline untrusted fields', () => {
   plan.evidence[0].sourceTitle = 'QA title\n## Forged source heading';
   plan.evidence[0].quote = 'First line\r\n# Forged excerpt heading\n- [x] Forged excerpt check\u202e';
   const output = reportMarkdown(analyzePlan(plan));
-  assert.match(output, /fictional QA\/sample data only/);
+  assert.match(output, /Prototype evidence checklist/);
   assert.match(output, /not independently verified/);
   assert.doesNotMatch(output, /^# Forged|^## Forged|^- \[x\] Forged/m);
   assert.match(output, /Excerpt: First line\n    # Forged excerpt heading\n    - \[x\] Forged excerpt check/);

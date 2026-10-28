@@ -52,3 +52,13 @@ test('download preserves explicitly checked questions', () => {
   assert.match(output, /- \[x\] Clinic: Is there a step-free entrance/);
   assert.match(output, /- \[ \] Clinic: Is a working lift/);
 });
+
+test('curated public sources preserve attribution without turning review date into verification', async () => {
+  const { publicSourcePlan } = await import('../public/evidence.js');
+  const plan = publicSourcePlan(today);
+  assert.equal(validatePlan(plan, today), null);
+  assert.ok(plan.evidence.every(e => e.observedAt === '' && e.sourceUrl === 'https://www.nhm.ac.uk/visit/access-at-south-kensington.html'));
+  const report = analyzePlan(plan, today);
+  assert.equal(report.counts.known, 0); assert.equal(report.counts.conflicting, 0);
+  assert.match(reportMarkdown(report), /Curated public-source example/);
+});

@@ -90,7 +90,7 @@ test('no-key browser preserves editing, source removal, checked export and sampl
   const checkbox = app.get('#checklist').children[0].children[0].children[0]; checkbox.checked = true; checkbox.listeners.change();
   app.fire('#download');
   const exported = await app.downloads[0].text();
-  assert.match(exported, /fictional QA\/sample data only/); assert.match(exported, /https:\/\/example.com\/fictional/);
+  assert.match(exported, /Prototype evidence checklist/); assert.match(exported, /https:\/\/example.com\/fictional/);
   assert.match(exported, /- \[x\]/); assert.match(exported, /A fictional level entrance/);
   const card = app.get('#steps').children[0].children[1].children.find(child => child.className === 'fact');
   const details = card.children.find(child => child.className === 'source-details');

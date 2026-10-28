@@ -41,3 +41,11 @@ The product workflow update recorded these desktop browser interactions against 
 There is no committed visual regression baseline, so visual regression is inconclusive. The desktop interaction check does not establish full accessibility compliance.
 
 The custom workflow is available for fictional QA only pending privacy/release approval. Export tests cover source links/excerpts and checked state; saved reports persist outside the application. Current browser automation and final audit evidence are recorded separately in [AUDIT.md](AUDIT.md).
+
+## Release follow-up, 28 October 2026
+
+The integrated suite now has 47 tests, including a public-source fixture check. Chrome reflow checks at 320px and 375px found no horizontal overflow. All form controls had labels in a DOM-backed check. Keyboard activation of the skip link moved focus to `#journey` after making the target programmatically focusable.
+
+Axe-core 4.14.0 with the WCAG A/AA rule tags found six contrast failures in the first mobile run. After color adjustments, desktop and mobile reruns reported zero violations (28 and 27 passing checks respectively). `aria-prohibited-attr` and `color-contrast` still include incomplete/manual cases; see `docs/audits/`. This is not a full compliance certification or a substitute for screen-reader-user testing.
+
+The public evidence demo was published successfully using Sites and its public-source example was exercised in Chrome. It explicitly reports AI unavailable. Live Nebius validation remains pending signup/key setup.

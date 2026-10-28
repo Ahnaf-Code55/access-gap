@@ -63,7 +63,7 @@ export function analyzePlan(plan, today = isoToday()) {
     return { id: `${stop.id}:${criterion.id}`, criterion: criterion.id, label: criterion.label, status, finding, detail, evidence, question };
   }) }));
   const facts = stops.flatMap(s => s.facts);
-  return { from: plan.from, to: plan.to, travelDate: plan.travelDate, isSample: plan.isSample, assessedAt: today, freshnessDays: FRESHNESS_DAYS, stops,
+  return { from: plan.from, to: plan.to, travelDate: plan.travelDate, isSample: plan.isSample, exampleKind: plan.exampleKind === 'public-source' ? 'public-source' : 'qa', assessedAt: today, freshnessDays: FRESHNESS_DAYS, stops,
     counts: { known: facts.filter(f => f.status === 'known').length, unknown: facts.filter(f => f.status === 'unknown').length, conflicting: facts.filter(f => f.status === 'conflicting').length },
     questions: facts.filter(f => f.question).map(f => ({ id: f.id, text: f.question })) };
 }
@@ -73,7 +73,7 @@ export function reportMarkdown(report, checked = new Set()) {
   const clean = value => String(value).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f-\u009f\u202a-\u202e\u2066-\u2069]/g, '\uFFFD').replace(/\r\n?|[\u2028\u2029]/g, '\n');
   const inline = value => clean(value).replace(/\n/g, ' ');
   const excerpt = value => clean(value).replace(/\n/g, '\n    ');
-  const lines = ['# Access Gap evidence checklist', '', `${inline(report.from)} → ${inline(report.to)}`, `Travel date: ${report.travelDate} | Assessed: ${report.assessedAt}`, '', '**Local prototype: fictional QA/sample data only. Do not use for travel.**', report.isSample ? '**Fictional sample data. Do not use for travel.**' : '**User-supplied QA evidence; not independently verified.**', `Review window: ${report.freshnessDays} days. A source date is not a guarantee of current conditions.`, ''];
+  const lines = ['# Access Gap evidence checklist', '', `${inline(report.from)} → ${inline(report.to)}`, `Travel date: ${report.travelDate} | Assessed: ${report.assessedAt}`, '', '**Prototype evidence checklist. Do not use as a travel or safety assessment.**', report.exampleKind === 'public-source' ? '**Curated public-source example; not independently verified onsite.**' : report.isSample ? '**Fictional sample data. Do not use for travel.**' : '**User-supplied QA evidence; not independently verified.**', `Review window: ${report.freshnessDays} days. A source date is not a guarantee of current conditions.`, ''];
   for (const stop of report.stops) {
     lines.push(`## ${inline(stop.name)}`, '');
     for (const fact of stop.facts) {
@@ -95,5 +95,16 @@ export function samplePlan(today = isoToday()) {
       { id: 'sample-2', stopId: 'path', criterion: 'pavement', value: 'yes', sourceTitle: 'Fictional community report A', sourceUrl: '', observedAt: dated(12), quote: 'There is a dropped kerb at the crossing.' },
       { id: 'sample-3', stopId: 'path', criterion: 'pavement', value: 'no', sourceTitle: 'Fictional community report B', sourceUrl: '', observedAt: dated(2), quote: 'A raised kerb blocks the crossing.' },
       { id: 'sample-4', stopId: 'clinic', criterion: 'toilet', value: 'yes', sourceTitle: 'Fictional clinic brochure', sourceUrl: '', observedAt: dated(120), quote: 'An accessible toilet is located near reception.' }
+    ] };
+}
+
+export function publicSourcePlan(today = isoToday()) {
+  const source = { sourceTitle: 'Natural History Museum accessibility page (updated March 2026)', sourceUrl: 'https://www.nhm.ac.uk/visit/access-at-south-kensington.html', observedAt: '' };
+  return { from: 'NHM Central Entrance', to: 'Natural History Museum galleries', travelDate: today, isSample: false, exampleKind: 'public-source',
+    stops: [{ id: 'entrance', name: 'NHM Central Entrance' }, { id: 'path', name: 'Connecting route (not verified)', kind: 'connection' }, { id: 'museum', name: 'Natural History Museum facilities' }],
+    evidence: [
+      { ...source, id: 'nhm-entrance', stopId: 'entrance', criterion: 'entrance', value: 'limited', quote: 'Paraphrase: the Central Entrance on Cromwell Road has step-free access via a steep ramp. Page reviewed 2026-10-28; exact observation date is not given.' },
+      { ...source, id: 'nhm-lifts', stopId: 'museum', criterion: 'lift', value: 'limited', quote: 'Paraphrase: lifts serve most areas, but outages can affect access. The museum asks visitors to check maintenance information. Page reviewed 2026-10-28; this is not a live lift check.' },
+      { ...source, id: 'nhm-toilet', stopId: 'museum', criterion: 'toilet', value: 'yes', quote: 'Paraphrase: wheelchair-accessible toilets are marked on the museum map. Page reviewed 2026-10-28; current availability has not been confirmed onsite.' }
     ] };
 }

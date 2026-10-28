@@ -1,4 +1,4 @@
-import { CRITERIA, VALUES, isoToday, samplePlan, validatePlan, analyzePlan, reportMarkdown } from '/evidence.js';
+import { CRITERIA, VALUES, isoToday, samplePlan, publicSourcePlan, validatePlan, analyzePlan, reportMarkdown } from '/evidence.js';
 const $ = selector => document.querySelector(selector);
 let plan = samplePlan();
 let report;
@@ -14,8 +14,8 @@ function resetAi() { checkedQuestions.clear(); revision++; $('#ai-result').textC
 function fillJourneyForm() { $('#from').value = plan.from; $('#to').value = plan.to; $('#travel-date').value = plan.travelDate; }
 function render() {
   report = analyzePlan(plan);
-  $('#sample-badge').textContent = plan.isSample ? 'FICTIONAL SAMPLE' : 'FICTIONAL QA';
-  $('#data-notice').textContent = plan.isSample ? 'Illustrative data only. The sample places and sources are fictional. Do not use this example for travel planning.' : 'Fictional QA evidence only. Do not enter real journeys, locations, disability information or accessibility needs. These sources are not independently verified and must not be used for travel planning.';
+  $('#sample-badge').textContent = plan.exampleKind === 'public-source' ? 'PUBLIC SOURCE EXAMPLE' : plan.isSample ? 'FICTIONAL SAMPLE' : 'FICTIONAL QA';
+  $('#data-notice').textContent = plan.exampleKind === 'public-source' ? 'Curated public-source example: Natural History Museum, London. Reviewed 28 October 2026. The page gives no exact observation dates, so these reports stay unknown until confirmed. No private journey or onsite verification is involved.' : plan.isSample ? 'Illustrative data only. The sample places and sources are fictional. Do not use this example for travel planning.' : 'Fictional QA evidence only. Do not enter real journeys, locations, disability information or accessibility needs. These sources are not independently verified and must not be used for travel planning.';
   $('#route-title').textContent = `${plan.from} → ${plan.to}`;
   for (const key of ['known', 'unknown', 'conflicting']) $(`#count-${key}`).textContent = report.counts[key];
   $('#steps').replaceChildren();
@@ -35,7 +35,7 @@ function render() {
           source.append(element('strong', '', item.sourceTitle), element('div', 'source-date', `${item.observedAt || 'Date unknown'}${item.stale ? ' · Over 90 days old' : ''}`), element('blockquote', '', item.quote));
           if (item.sourceUrl) { const link = element('a', '', 'Open source ↗'); link.href = item.sourceUrl; link.target = '_blank'; link.rel = 'noopener noreferrer'; source.append(link); }
           const remove = element('button', 'remove-button', 'Remove evidence'); remove.type = 'button'; remove.setAttribute('aria-label', `Remove ${item.sourceTitle} evidence for ${fact.label} at ${stop.name}`);
-          remove.addEventListener('click', () => { plan.evidence = plan.evidence.filter(e => e.id !== item.id); resetAi(); render(); message('Evidence removed. Checklist updated.'); }); source.append(remove); details.append(source);
+          remove.addEventListener('click', () => { plan.evidence = plan.evidence.filter(e => e.id !== item.id); resetAi(); render(); message('Evidence removed. Checklist updated.'); $('#form-status').focus(); }); source.append(remove); details.append(source);
         }
         card.append(details);
       }
@@ -62,7 +62,7 @@ $('#journey-form').addEventListener('submit', event => {
   const from = $('#from').value.trim(); const to = $('#to').value.trim();
   const renamed = from !== plan.from || to !== plan.to;
   const candidate = { ...plan, from, to, travelDate: $('#travel-date').value };
-  if (renamed) { candidate.stops = [{ id: 'start', name: from }, { id: 'path', name: 'Connecting pavement', kind: 'connection' }, { id: 'destination', name: to }]; candidate.evidence = []; candidate.isSample = false; }
+  if (renamed) { candidate.stops = [{ id: 'start', name: from }, { id: 'path', name: 'Connecting pavement', kind: 'connection' }, { id: 'destination', name: to }]; candidate.evidence = []; candidate.isSample = false; candidate.exampleKind = 'qa'; }
   const error = validatePlan(candidate); if (error) return message(error);
   plan = candidate; resetAi(); render(); message(renamed ? 'Journey updated. Previous evidence was cleared because the places changed.' : 'Travel date updated.');
 });
@@ -70,6 +70,7 @@ $('#own-journey').addEventListener('click', () => {
   plan = { from: 'Fictional starting point', to: 'Fictional destination', travelDate: isoToday(), isSample: false, stops: [{ id: 'start', name: 'Fictional starting point' }, { id: 'path', name: 'Connecting pavement', kind: 'connection' }, { id: 'destination', name: 'Fictional destination' }], evidence: [] };
   resetAi(); fillJourneyForm(); render(); message('Enter fictional QA places only, then choose Update journey.'); $('#from').focus(); $('#from').select();
 });
+$('#load-public').addEventListener('click', () => { plan = publicSourcePlan(); resetAi(); fillJourneyForm(); render(); message('Public-source example loaded. Source dates are unknown; review the linked museum page for context.'); });
 $('#load-sample').addEventListener('click', () => { plan = samplePlan(); resetAi(); fillJourneyForm(); render(); message('Fictional example restored. Your previous changes were cleared.'); });
 $('#evidence-form').addEventListener('submit', event => {
   event.preventDefault();

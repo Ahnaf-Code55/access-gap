@@ -4,6 +4,10 @@
 
 An early project for the [Nebius x NVIDIA Global AI Hackathon](https://nebiusglobalaihackathon.devpost.com/), Best Apps and Agents track.
 
+## Public demo
+
+[Open Access Gap](https://access-gap-hackathon.brinyberry67.chatgpt.site). The hosted demo runs the evidence workflow in the browser; paid AI is explicitly disabled. The guarded Node/Nebius path can be run locally after key setup.
+
 ## Run locally
 
 Node.js 20 or later. No external package dependencies or installation step is needed.
@@ -68,7 +72,7 @@ This app does not calculate a route, retrieve live information, verify source tr
 
 ## Submission status
 
-The evidence workflow is implemented. Public hosting, a real tested Nebius/NVIDIA call, attributed real-world examples, user feedback, a public demo video, and the Devpost submission remain. Local abuse controls are implemented and tested offline. The server binds to localhost; the selected hosting/proxy, authentication, provider monetary limits and privacy decisions still need review before public exposure or real-data use.
+The evidence workflow and public browser demo are implemented. The attributed public-institution example is documented in [docs/SOURCES.md](docs/SOURCES.md). A real tested Nebius/NVIDIA call, user feedback, the final public demo video, and Devpost submission remain. Nebius currently blocks account access behind a card requirement; see [docs/NEBIUS_ACCESS.md](docs/NEBIUS_ACCESS.md). Local abuse controls are implemented and tested offline. The server binds to localhost; the selected hosting/proxy, authentication, provider monetary limits and privacy decisions still need review before public exposure or real-data use.
 
 ## License
 
