@@ -1,4 +1,4 @@
-# Release status — 28 October 2026
+# Release status — 29 October 2026
 
 ## Completed
 
@@ -8,14 +8,14 @@
 - Checked 320px and 375px reflow with no horizontal overflow, and keyboard skip-link focus. Focus after evidence removal now moves to the status message.
 - Deployed the public browser-only evidence demo with AI explicitly disabled: https://access-gap-hackathon.brinyberry67.chatgpt.site
 - Created a 47-second captioned offline walkthrough preview at `artifacts/AccessGap-demo-preview.mp4`. It is local-only and clearly says live inference is unavailable; it is not the required public YouTube submission video.
+- Reverified the public demo and GitHub repository respond successfully; all 47 offline tests pass.
 
 ## Pending account-dependent steps
 
-- Nebius access is blocked by mandatory card verification even though the hackathon advertises credits and Nebius documentation says promo codes can be applied without a card. The promo form shows submitted, but the code has not been confirmed. See [NEBIUS_ACCESS.md](NEBIUS_ACCESS.md). No key or card was entered.
+- Nebius emailed the $25 promo code and a Token Factory welcome message confirming account access. The connected Gmail tool redacted the promo code; it was not copied into the repo or chat. Console access, promo redemption, API-key creation, and live inference still need verification. No key or card was entered. See [NEBIUS_ACCESS.md](NEBIUS_ACCESS.md).
 - A real runtime NVIDIA-model call via Nebius, with a recorded test result and a final decision on how judges access inference.
-- Devpost registration: personal eligibility declarations and Official Rules acceptance must be completed by the team leader.
+- Devpost draft: team and overview are saved; project details, required video, Additional Info, and final submission remain incomplete. Required personal eligibility and country fields must be accurate.
 - Final demo recording and public YouTube upload after the live model segment is available.
-- Confirm Turjo's Devpost identifier and add him to the submission.
 - Final Devpost submission, with the completed links and factual tool feedback.
 
 ## Validation still requiring people

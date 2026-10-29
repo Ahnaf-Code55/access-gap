@@ -29,7 +29,7 @@ The browser application uses semantic HTML, CSS, and JavaScript. A pure evidence
 
 Turjo led security hardening: input and host/origin validation, resource/rate/concurrency controls, bounded upstream reads, output allowlisting, export hardening, privacy notes, and adversarial tests. The team leader built the evidence workflow, UI, public demo and submission materials.
 
-Current hosting note: the public demo is browser-only and deliberately disables paid inference. The guarded Node/Nebius path is in the repository. Live inference and its final testing instructions are pending; the entry is not ready to submit until that requirement is met.
+Current hosting note: the public demo is browser-only and deliberately disables paid inference. The guarded Node/Nebius path is in the repository. Nebius emailed the $25 promo code and a Token Factory welcome message, but the code has not been redeemed, no API key is configured, and live inference has not been tested. The entry is not ready to submit until that requirement is met.
 
 ## Challenges
 We had to distinguish a missing fact from a negative report, preserve an old disagreement rather than blindly prefer the latest source, and avoid treating a page review date as a fresh observation. We also treated model output and source excerpts as untrusted, limiting the model to candidate selection instead of permitting unsupported travel claims.
